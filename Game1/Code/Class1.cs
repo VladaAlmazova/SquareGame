@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Game1
 {
-    class Entity
+   class Entity
     {
         public static int Width, Height;
         public static SpriteBatch SpriteBatch { get; set; }
@@ -20,29 +20,55 @@ namespace Game1
             SpriteBatch = spriteBatch;
             Width = width;
             Height = height;
-            Character = new Character(new Vector2(0, 0));
+            Character = new Character(new Vector2(50, 900 - 113 - 50));
         }
-        
-        static public void Draw()
+
+
+        static public void Draw(GameTime gameTime)
         {
-            Character.Draw();
+            Character.Draw(gameTime);
         }
     }
 
 
     class Character: Entity
     {
-        Color color = Color.Black;
+        Color color = Color.White;
         public static Texture2D texture2D { get; set; }
-        Vector2 Pos;
+        public Vector2 Pos;
         public Character(Vector2 pos)
         {
             Pos = pos;
         }
 
-        public void Draw()
+        public void Update(Keys[] keys)
         {
-            Entity.SpriteBatch.Draw(texture2D, Pos = new Vector2(0, Height-200), color);
+            if (keys.Length > 0)
+            {
+                switch (keys[0])
+                {
+                    case Keys.Left:
+                        Pos.X -= 50;
+                        break;
+                    case Keys.Right:
+                        Pos.X += 50;
+                        break;
+                    case Keys.Up:
+                        Pos.Y -= 50;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            else
+                if (Pos.Y + 10 <= 737)
+                Pos.Y += 10;
+        }
+
+        public void Draw(GameTime gameTime)
+        {
+            //Entity.SpriteBatch.Draw(texture2D, Pos = new Vector2(0, Height-200), color);
+            Entity.SpriteBatch.Draw(texture2D, Pos, color);
         }
     }
 }
