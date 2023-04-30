@@ -11,8 +11,8 @@ namespace Game1
         private SpriteBatch spriteBatch;
         Texture2D texture;
 
-        private Vector2 pos_char = new Vector2(50, 900 - 113 - 50);
-        private const int size = 113;
+        //private Vector2 pos_char = new Vector2(50, 900 - 113 - 50);
+        //private const int size = 113;
 
         public Game1()
         {
@@ -35,10 +35,9 @@ namespace Game1
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
             Entity.InIt(spriteBatch, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
-            Character.texture2D = Content.Load<Texture2D>("main_character"); 
-            //Character.texture2D = Content.Load<Texture2D>("character_square");
-            texture = Content.Load<Texture2D>("main_character");//113*113
-            // TODO: use this.Content to load your game content here
+            Character.texture2D = Content.Load<Texture2D>("main_character"); //113*113
+            Platform.texture2D = Content.Load<Texture2D>("platform");//20*20
+           // texture = Content.Load<Texture2D>("platform");//20*20
         }
 
         protected override void Update(GameTime gameTime)
@@ -50,7 +49,9 @@ namespace Game1
                     Exit();
             }
             Entity.Character.Update(keys);
-            pos_char = Entity.Character.Pos;
+            Entity.Platform1.Update(keys);
+
+            //pos_char = Entity.Character.Pos;
 
             // TODO: Add your update logic here
 
@@ -61,7 +62,10 @@ namespace Game1
         {
             GraphicsDevice.Clear(Color.WhiteSmoke);
             spriteBatch.Begin();
+            /*for(var i = 0; i < 10; i++)
+                spriteBatch.Draw(texture, new Vector2(578+(20*i), 550), Color.White);*/
             Entity.Draw(gameTime);
+
             spriteBatch.End();
 
             /*spriteBatch.Begin();
