@@ -150,6 +150,9 @@ namespace Game1
                     case Keys.Up:
                         posTest.Y -= speed_e;
                         break;
+                    /*case Keys.Down:
+                        posTest.Y += 20;
+                        break;*/
                     default:
                         break;
                 }
