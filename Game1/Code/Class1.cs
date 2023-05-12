@@ -18,6 +18,8 @@ namespace Game1
         public static SpriteBatch SpriteBatch { get; set; }
         static public Character Character { get; set; }
 
+        public static readonly Vector2 FocusPos = new Vector2(840, 800);
+
         public static void InIt(SpriteBatch spriteBatch, int width, int height)
         {
             SpriteBatch = spriteBatch;
@@ -40,13 +42,14 @@ namespace Game1
         }
     }
 
-    class PackPlatforms: Entity
+    static class PackPlatforms
     {
         static public List<Platform> platforms = new List<Platform>()
         {
-            new Platform(new Vector2(400, 700), 10),
-            new Platform(new Vector2(600, 600), 10),
-            new Platform(new Vector2(800, 460), 10),
+            new Platform(new Vector2(400+80, 700), 10),
+            new Platform(new Vector2(600+80, 600), 10),
+            new Platform(new Vector2(800+80, 460), 10),
+            //new Platform(new Vector2(200, 540), 8),
         };
     }
 
@@ -66,7 +69,7 @@ namespace Game1
         public Keys lastKey = Keys.S;
         private bool Fall = false;
 
-        private bool CorrectPositionWithPlat(Vector2 pos, Platform platform)
+        private bool CorrectPositionWithPlat(Vector2 pos, Platform platform) //внутри класса героя
         {
             return IsInMap(pos) && !platform.IsInPlatform(pos);
         }
@@ -90,8 +93,10 @@ namespace Game1
                 Fall = true;
         }
 
+        private bool wasRight = false; //нажата ли клавиша вправо///////////////////////////
         private Vector2 PressingButton(Vector2 posTest, Keys key, int speed)
         {
+            wasRight = false;
             switch (key)
             {
                 case Keys.Left:
@@ -101,6 +106,7 @@ namespace Game1
                 case Keys.Right:
                     posTest.X += speed;
                     CanFall(posTest);
+                    wasRight = true;                   
                     break;
                 case Keys.Up:
                     posTest.Y -= speed;
@@ -113,6 +119,28 @@ namespace Game1
             return posTest;
         }
 
+        private bool SomethingBad = false;////////////////////////////////////////////////////////////
+
+        /////////
+        private Vector2 CorrectPosUpdate(Vector2 posTest) 
+        {
+            var correctPos = Pos;
+            if (CorrectPositionWithAllPlat(posTest))  
+            {
+                if (wasRight && !Fall && Pos.X >= FocusPos.X) // Если кубик падает, то не двигать карту
+                {
+                    for (int i = 0; i < PackPlatforms.platforms.Count; i++)
+                        PackPlatforms.platforms[i].Update(speed);
+                }
+                else
+                    correctPos = posTest;
+            }
+            else
+                SomethingBad = true;
+            return correctPos;
+        }
+        //////////
+
         public void Update(Keys[] keys)
         {
             var posTest = Pos;
@@ -123,13 +151,33 @@ namespace Game1
                     posTest = PressingButton(posTest, keys[0], speed);
                 }
             }            
-            if (Pos == posTest)
+            if (Pos == posTest)//если ничего не нажато проолжаем в том же духе
             {
                 var speed_e = speed;
                 if (Fall)
                     speed_e = speed / 2;
                 posTest = PressingButton(posTest, lastKey, speed_e);                    
             }
+            Pos = CorrectPosUpdate(posTest);
+            if (SomethingBad)
+            {
+                Fall = true;
+                posTest = Pos;
+                if(lastKey == Keys.Up)
+                    lastKey = Keys.S;
+            }
+            SomethingBad = false;
+            if (Fall)    
+                posTest.Y += gravity;
+
+            Pos = CorrectPosUpdate(posTest);
+            if (SomethingBad)
+            {
+                Fall = false;
+            }
+            SomethingBad = false;
+
+            /*
 
             if (CorrectPositionWithAllPlat(posTest))       //3 plat
             {
@@ -154,8 +202,8 @@ namespace Game1
             else
             {
                 Fall = false;
-            }
-                
+            }*/
+
         }
 
         public void Draw(GameTime gameTime)
@@ -182,22 +230,29 @@ namespace Game1
             r_down_p = new Vector2(Pos.X + Width, Pos.Y + Height);
         }
 
-        public void Update(Keys[] keys)
+        private Character charr = new Character(Vector2.Zero);
+
+        //public void Update(Keys[] keys)
+        public void Update(int speed)
         {
-            if (keys.Length > 0)
+            Pos.X -= speed;//charr.speed;
+            l_up_p = new Vector2(Pos.X, Pos.Y);///dop
+            r_down_p = new Vector2(Pos.X + Width, Pos.Y + Height);///dop
+
+            /*if (keys.Length > 0)
             {
                 switch (keys[0])
                 {
-                    /*case Keys.Right:
-                        Pos.X -= 50;
+                    case Keys.Right:
+                        Pos.X -= charr.speed;
                         break;
-                    case Keys.Up:
-                        Pos.Y += 50;
-                        break;*/
+                    //case Keys.Up:
+                        //Pos.Y += 50;
+                        //break;
                     default:
                         break;
                 }
-            }
+            }*/
         }
 
         public void Draw(GameTime gameTime)
@@ -211,12 +266,12 @@ namespace Game1
         }
 
 
-        Vector2 l_up_p;
-        Vector2 r_down_p;
+        Vector2 l_up_p; //координаты левого верхнего угла платформы
+        Vector2 r_down_p; //правого нижнего 
 
-        public bool IsInPlatform(Vector2 ChPos)
+        public bool IsInPlatform(Vector2 ChPos) //метод внутри класса платформы
         {          
-            var l_ClUp = new Vector2(ChPos.X, ChPos.Y);
+            var l_ClUp = new Vector2(ChPos.X, ChPos.Y); // координаты углов квадрата (героя)
             var r_CrDow = new Vector2(ChPos.X + Character.size, ChPos.Y + Character.size);
             if ((l_up_p.X < r_CrDow.X && r_CrDow.X <= r_down_p.X) || (l_up_p.X <= l_ClUp.X && l_ClUp.X < r_down_p.X))
             {
