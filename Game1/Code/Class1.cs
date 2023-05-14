@@ -20,12 +20,16 @@ namespace Game1
 
         public static readonly Vector2 FocusPos = new Vector2(840, 800);
 
+        static public int Distance = 0;
+        static public Random RandDist = new Random();
+
         public static void InIt(SpriteBatch spriteBatch, int width, int height)
         {
             SpriteBatch = spriteBatch;
             Width = width;
             Height = height;
             Character = new Character(new Vector2(200, 800));
+
         }
 
 
@@ -51,6 +55,16 @@ namespace Game1
             new Platform(new Vector2(800+80, 460), 10),
             //new Platform(new Vector2(200, 540), 8),
         };
+        ///////////////////////////////////////////////////////////////////////////////////////// 
+        static public void AddPlatform()
+        {
+            var rand = new Random();
+            var newY = rand.NextInt64(20, 880);
+            newY -= newY % 20;
+            platforms.Add(new Platform(new Vector2(1660, newY), (int)rand.NextInt64(6, 15)));
+            Entity.Distance = 0;
+        }
+        /////////////////////////////////////////////////////////////////////////////////////////
     }
 
     class Character: Entity
@@ -93,7 +107,7 @@ namespace Game1
                 Fall = true;
         }
 
-        private bool wasRight = false; //нажата ли клавиша вправо///////////////////////////
+        private bool wasRight = false; //нажата ли клавиша вправо
         private Vector2 PressingButton(Vector2 posTest, Keys key, int speed)
         {
             wasRight = false;
@@ -119,18 +133,24 @@ namespace Game1
             return posTest;
         }
 
-        private bool SomethingBad = false;////////////////////////////////////////////////////////////
+        private bool SomethingBad = false;
 
-        /////////
         private Vector2 CorrectPosUpdate(Vector2 posTest) 
         {
             var correctPos = Pos;
             if (CorrectPositionWithAllPlat(posTest))  
             {
-                if (wasRight && !Fall && Pos.X >= FocusPos.X) // Если кубик падает, то не двигать карту
+                if (wasRight && !Fall && Pos.X >= FocusPos.X) // Если кубик падает, то не двигать карту // все же двигать 
                 {
                     for (int i = 0; i < PackPlatforms.platforms.Count; i++)
                         PackPlatforms.platforms[i].Update(speed);
+                    Distance += 20;/////////////////////////////////////////////// для появления новой плашки 
+
+                    if (Distance >= 20 * RandDist.NextInt64(20, 50))
+                    {
+                        PackPlatforms.AddPlatform();
+                    }
+                        ////////////////////////////////////////////////////////////////
                 }
                 else
                     correctPos = posTest;
@@ -139,7 +159,6 @@ namespace Game1
                 SomethingBad = true;
             return correctPos;
         }
-        //////////
 
         public void Update(Keys[] keys)
         {
@@ -176,34 +195,6 @@ namespace Game1
                 Fall = false;
             }
             SomethingBad = false;
-
-            /*
-
-            if (CorrectPositionWithAllPlat(posTest))       //3 plat
-            {
-                Pos = posTest;
-            }
-
-            else
-            {
-                Fall = true;
-                posTest = Pos;
-                if(lastKey == Keys.Up)
-                    lastKey = Keys.S;
-            }
-            if (Fall)    
-                posTest.Y += gravity;
-
-            if (CorrectPositionWithAllPlat(posTest))       //3 plat
-            {
-                Pos = posTest;
-            }
-
-            else
-            {
-                Fall = false;
-            }*/
-
         }
 
         public void Draw(GameTime gameTime)
@@ -232,27 +223,11 @@ namespace Game1
 
         private Character charr = new Character(Vector2.Zero);
 
-        //public void Update(Keys[] keys)
         public void Update(int speed)
         {
             Pos.X -= speed;//charr.speed;
             l_up_p = new Vector2(Pos.X, Pos.Y);///dop
             r_down_p = new Vector2(Pos.X + Width, Pos.Y + Height);///dop
-
-            /*if (keys.Length > 0)
-            {
-                switch (keys[0])
-                {
-                    case Keys.Right:
-                        Pos.X -= charr.speed;
-                        break;
-                    //case Keys.Up:
-                        //Pos.Y += 50;
-                        //break;
-                    default:
-                        break;
-                }
-            }*/
         }
 
         public void Draw(GameTime gameTime)
