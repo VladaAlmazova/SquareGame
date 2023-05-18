@@ -20,8 +20,10 @@ namespace Game1
 
         public static readonly Vector2 FocusPos = new Vector2(840, 800);
 
-        static public int Distance = 0;
+        static public int DistanceEmpty = 0;
         static public Random RandDist = new Random();
+
+        public static PackPlatforms Platforms = new PackPlatforms();
 
         public static void InIt(SpriteBatch spriteBatch, int width, int height)
         {
@@ -36,8 +38,8 @@ namespace Game1
         static public void Draw(GameTime gameTime)
         {
             Character.Draw(gameTime);
-            for(int i = 0; i < PackPlatforms.platforms.Count; i++)
-                PackPlatforms.platforms[i].Draw(gameTime);
+            for(int i = 0; i < Platforms.platforms.Count; i++)
+                Platforms.platforms[i].Draw(gameTime);
         }
 
         public static bool IsInMap(Vector2 pos)
@@ -46,25 +48,34 @@ namespace Game1
         }
     }
 
-    static class PackPlatforms
+    class PackPlatforms: Entity //удаление платформ
     {
-        static public List<Platform> platforms = new List<Platform>()
+        public List<Platform> platforms = new List<Platform>()
         {
             new Platform(new Vector2(400+80, 700), 10),
             new Platform(new Vector2(600+80, 600), 10),
             new Platform(new Vector2(800+80, 460), 10),
             //new Platform(new Vector2(200, 540), 8),
         };
-        ///////////////////////////////////////////////////////////////////////////////////////// 
-        static public void AddPlatform()
+
+        public void AddPlatform()
         {
             var rand = new Random();
             var newY = rand.NextInt64(20, 880);
             newY -= newY % 20;
             platforms.Add(new Platform(new Vector2(1660, newY), (int)rand.NextInt64(6, 15)));
-            Entity.Distance = 0;
+            Entity.DistanceEmpty = 0;
+            DelitePlatform();
         }
-        /////////////////////////////////////////////////////////////////////////////////////////
+
+        private void DelitePlatform() //удаляет первый элемент листа платформ
+        {
+            while (!IsInMap(platforms[0].r_down_p))
+            {
+                platforms.RemoveAt(0);
+            }
+        }
+
     }
 
     class Character: Entity
@@ -90,8 +101,8 @@ namespace Game1
 
         private bool CorrectPositionWithAllPlat(Vector2 pos)
         {
-            for (int i = 0; i < PackPlatforms.platforms.Count; i++)
-                if (!CorrectPositionWithPlat(pos, PackPlatforms.platforms[i]))
+            for (int i = 0; i < Platforms.platforms.Count; i++)
+                if (!CorrectPositionWithPlat(pos, Platforms.platforms[i]))
                     return false;
             return true;
         }
@@ -142,16 +153,46 @@ namespace Game1
             {
                 if (wasRight && !Fall && Pos.X >= FocusPos.X) // Если кубик падает, то не двигать карту // все же двигать 
                 {
-                    for (int i = 0; i < PackPlatforms.platforms.Count; i++)
-                        PackPlatforms.platforms[i].Update(speed);
-                    Distance += 20;/////////////////////////////////////////////// для появления новой плашки 
+                    for (int i = 0; i < Platforms.platforms.Count; i++)
+                        Platforms.platforms[i].Update(speed);
+                    DistanceEmpty += 20;//для появления новой плашки 
 
-                    if (Distance >= 20 * RandDist.NextInt64(20, 50))
+                    if (DistanceEmpty >= 20 * RandDist.NextInt64(20, 50))
                     {
-                        PackPlatforms.AddPlatform();
+                        Platforms.AddPlatform();
                     }
-                        ////////////////////////////////////////////////////////////////
                 }
+                /*if (wasRight && Pos.X >= FocusPos.X) // просто в два раза быстрее движется после фокуса,
+                                                     // падение по направлению уменьшилось, но одновременно движутся и платформы и персонаж
+                                                     // ! возможно сделать анимацию без нажатия кнопки
+                {
+
+                    var kof = 1;
+                    if (Fall)
+                        kof = 2;
+                    //при падении двигать и плашки и кубик
+
+                    for (int i = 0; i < Platforms.platforms.Count; i++)
+                    {
+                        Platforms.platforms[i].Update(speed/kof);
+                    }
+
+                    if(Fall)
+                    {
+                        posTest.Y += gravity;
+                        if (CorrectPositionWithAllPlat(posTest))
+                            correctPos.Y += gravity;
+                        else
+                            Fall = false;
+                    }
+                       
+                    DistanceEmpty += 20;//для появления новой плашки 
+
+                    if (DistanceEmpty >= 20 * RandDist.NextInt64(20, 50))
+                    {
+                        Platforms.AddPlatform();
+                    }
+                }*/
                 else
                     correctPos = posTest;
             }
@@ -221,7 +262,7 @@ namespace Game1
             r_down_p = new Vector2(Pos.X + Width, Pos.Y + Height);
         }
 
-        private Character charr = new Character(Vector2.Zero);
+        //private Character charr = new Character(Vector2.Zero);
 
         public void Update(int speed)
         {
@@ -242,7 +283,7 @@ namespace Game1
 
 
         Vector2 l_up_p; //координаты левого верхнего угла платформы
-        Vector2 r_down_p; //правого нижнего 
+        public Vector2 r_down_p; //правого нижнего 
 
         public bool IsInPlatform(Vector2 ChPos) //метод внутри класса платформы
         {          
