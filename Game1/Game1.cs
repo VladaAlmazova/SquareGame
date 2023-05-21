@@ -9,7 +9,9 @@ namespace Game1
     {
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
-        Texture2D texture;
+
+
+        Texture2D gameOverTexture;
 
         public Game1()
         {
@@ -21,7 +23,7 @@ namespace Game1
         protected override void Initialize()
         {
             graphics.PreferredBackBufferWidth = 1680;
-            graphics.PreferredBackBufferHeight = 920;//900;
+            graphics.PreferredBackBufferHeight = 920;
             graphics.IsFullScreen = false;
             graphics.ApplyChanges();
             base.Initialize();
@@ -31,8 +33,11 @@ namespace Game1
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
             Entity.InIt(spriteBatch, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
-            Character.texture2D = Content.Load<Texture2D>("character");//"main_character"); //113*113
+            Character.texture2D = Content.Load<Texture2D>("character");//"main_character"); //120*120
             Platform.texture2D = Content.Load<Texture2D>("platform");//20*20
+            Enemy.texture2D = Content.Load<Texture2D>("Enemy1");
+            Money.texture2D = Content.Load<Texture2D>("money");
+            gameOverTexture = Content.Load<Texture2D>("gameOver");
         }
 
         protected override void Update(GameTime gameTime)
@@ -44,7 +49,7 @@ namespace Game1
                     Exit();
             }
             Entity.Character.Update(keys);
-            //Entity.Platform1.Update(keys);
+            Entity.Enemy.Update();
 
             base.Update(gameTime);
         }
@@ -54,7 +59,8 @@ namespace Game1
             GraphicsDevice.Clear(Color.WhiteSmoke);
             spriteBatch.Begin();
             Entity.Draw(gameTime);
-
+            if(Entity.Enemy.GameOver) // конец игры
+                spriteBatch.Draw(gameOverTexture, Vector2.Zero, Color.White);
             spriteBatch.End();
 
             base.Draw(gameTime);
