@@ -79,6 +79,8 @@ namespace Game1
             r_down_p = new Vector2(Pos.X + Width, Pos.Y + Height);
         }
 
+        //private Character charr = new Character(Vector2.Zero);
+
         public void Update(int speed)
         {
             Pos.X -= speed;//charr.speed;

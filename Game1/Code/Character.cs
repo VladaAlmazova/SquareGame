@@ -66,6 +66,7 @@ namespace Game1
 
         private Vector2 CorrectPosUpdate(Vector2 posTest, int speede)
         {
+            //SomethingBad = false;
             var correctPos = Pos;
             if (Pos == posTest)
                 return Pos;
@@ -84,7 +85,23 @@ namespace Game1
                         Platforms.AddPlatform();
                     }
                     correctPos.Y = posTest.Y;
-                }
+                    }
+
+                    for (int i = 0; i < Platforms.platforms.Count; i++)
+                    {
+                        Platforms.platforms[i].Update(speed / kof);
+                    }
+                    CanFall(correctPos);
+
+
+
+                    DistanceEmpty += 20;//для появления новой плашки 
+
+                    if (DistanceEmpty >= 20 * RandDist.NextInt64(20, 50))
+                    {
+                        Platforms.AddPlatform();
+                    }
+                }*/
                 else
                     correctPos = posTest;
             }
@@ -103,9 +120,11 @@ namespace Game1
                     posTest = PressingButton(posTest, keys[0], speed);
                 }
             }
-            var speed_e = speed;
-            if (Fall)
-                speed_e = speed / 2;
+            if (Pos == posTest)//если ничего не нажато проолжаем в том же духе
+            {
+                var speed_e = speed;
+                if (Fall)
+                    speed_e = speed / 2;
             if (Pos == posTest)//если ничего не нажато проолжаем в том же духе
             {                
                 posTest = PressingButton(posTest, lastKey, speed_e);
@@ -122,7 +141,7 @@ namespace Game1
                 {
                     p1 = CorrectPosUpdate(new Vector2(posTest.X + 5, posTest.Y), 5);
                 }
-            }
+            }        
             Pos = p1;
             //            
             if (SomethingBad)
@@ -132,7 +151,7 @@ namespace Game1
                 if (lastKey == Keys.Up)
                 {
                     lastKey = Keys.S;
-                }
+            }
                     
             }
             SomethingBad = false;
