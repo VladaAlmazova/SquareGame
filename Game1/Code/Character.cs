@@ -15,15 +15,18 @@ namespace Game1
         public static Texture2D texture2D { get; set; }
         public Vector2 Pos;
         public const int size = 120;
-        public int speed = 10; // делитель 20;
+        public int speed = 10; // делитель 20
         public int gravity = 10;// делитель 20;
+
+        public int nowSpeed = 10;
+        private int maxspeed = 10;
         public Character(Vector2 pos)
         {
             Pos = pos;
         }
 
         public Keys lastKey = Keys.S;
-        private bool Fall = false;      
+        private bool Fall = false;
 
         private void CanFall(Vector2 pos) //3plat
         {
@@ -45,14 +48,17 @@ namespace Game1
                 case Keys.Left:
                     posTest.X -= speed;
                     CanFall(posTest);
+                    Ups = 0;
                     break;
                 case Keys.Right:
                     posTest.X += speed;
                     CanFall(posTest);
                     wasRight = true;
+                    Ups = 0;
                     break;
                 case Keys.Up:
                     posTest.Y -= speed;
+                    Ups++;
                     break;
                 default:
                     key = lastKey;
@@ -63,10 +69,10 @@ namespace Game1
         }
 
         private bool SomethingBad = false;
+        private int Ups = 0;
 
         private Vector2 CorrectPosUpdate(Vector2 posTest, int speede)
         {
-            //SomethingBad = false;
             var correctPos = Pos;
             if (Pos == posTest)
                 return Pos;
@@ -76,7 +82,8 @@ namespace Game1
                 {
                     Platforms.GoToLeft(speede);
                     MoneyPack.Update(speede);
-                    Enemy.Pos.X -= speede;
+                    if(Enemy.Pos.X + Width + 300>= 0)
+                        Enemy.Pos.X -= speede;
 
                     DistanceEmpty += speede;//для появления новой плашки 
 
@@ -85,23 +92,7 @@ namespace Game1
                         Platforms.AddPlatform();
                     }
                     correctPos.Y = posTest.Y;
-                    }
-
-                    for (int i = 0; i < Platforms.platforms.Count; i++)
-                    {
-                        Platforms.platforms[i].Update(speed / kof);
-                    }
-                    CanFall(correctPos);
-
-
-
-                    DistanceEmpty += 20;//для появления новой плашки 
-
-                    if (DistanceEmpty >= 20 * RandDist.NextInt64(20, 50))
-                    {
-                        Platforms.AddPlatform();
-                    }
-                }*/
+                }
                 else
                     correctPos = posTest;
             }
@@ -117,21 +108,19 @@ namespace Game1
             {
                 if (keys.Length > 0)
                 {
-                    posTest = PressingButton(posTest, keys[0], speed);
+                    posTest = PressingButton(posTest, keys[0], speed);//nowSpeed);//
                 }
             }
+            var speed_e = speed;//nowSpeed;//
+            if (Fall)
+                speed_e = speed / 2;//nowSpeed / 2;//
             if (Pos == posTest)//если ничего не нажато проолжаем в том же духе
             {
-                var speed_e = speed;
-                if (Fall)
-                    speed_e = speed / 2;
-            if (Pos == posTest)//если ничего не нажато проолжаем в том же духе
-            {                
                 posTest = PressingButton(posTest, lastKey, speed_e);
             }
             //n
             var p1 = CorrectPosUpdate(posTest, speed_e);
-            if(SomethingBad)
+            if (SomethingBad)
             {
                 if (lastKey == Keys.Right)
                 {
@@ -141,7 +130,7 @@ namespace Game1
                 {
                     p1 = CorrectPosUpdate(new Vector2(posTest.X + 5, posTest.Y), 5);
                 }
-            }        
+            }
             Pos = p1;
             //            
             if (SomethingBad)
@@ -151,15 +140,15 @@ namespace Game1
                 if (lastKey == Keys.Up)
                 {
                     lastKey = Keys.S;
-            }
-                    
+                }
+
             }
             SomethingBad = false;
             if (Fall)
             {
                 posTest.Y += gravity;
             }
-               
+
 
             Pos = CorrectPosUpdate(posTest, speed_e);
             if (SomethingBad)
@@ -167,6 +156,15 @@ namespace Game1
                 Fall = false;
             }
             SomethingBad = false;
+
+            MoneyPack.CollectWhatCan();
+            /*if (Ups == 0)
+                nowSpeed = maxspeed;
+            else
+            {
+                var a = (int)Math.Round((double)Ups / 20);
+                nowSpeed = speed - 2*a;
+            } */
         }
 
         public void Draw(GameTime gameTime)

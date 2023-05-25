@@ -36,11 +36,11 @@ namespace Game1
 
         private void DelitePlatform() //удаляет первый элемент листа платформ
         {
-            while (!IsInMap(platforms[0].r_down_p))
+            while (platforms[0].r_down_p.X < 0)//(!IsInMap(platforms[0].r_down_p))
             {
                 platforms.RemoveAt(0);
             }
-        }      
+        }
 
         public void GoToLeft(int speed)
         {
@@ -79,8 +79,6 @@ namespace Game1
             r_down_p = new Vector2(Pos.X + Width, Pos.Y + Height);
         }
 
-        //private Character charr = new Character(Vector2.Zero);
-
         public void Update(int speed)
         {
             Pos.X -= speed;//charr.speed;
@@ -94,7 +92,7 @@ namespace Game1
             for (var i = 0; i < countPlat; i++)
             {
                 Entity.SpriteBatch.Draw(texture2D, ostPos, color);
-                for(int j = 1; j < 3; j++)
+                for (int j = 1; j < 3; j++)
                 {
                     Entity.SpriteBatch.Draw(texture2D, new Vector2(ostPos.X, ostPos.Y + j * pictureSize), color);
                 }
@@ -106,16 +104,18 @@ namespace Game1
         Vector2 l_up_p; //координаты левого верхнего угла платформы
         public Vector2 r_down_p; //правого нижнего 
 
-        public bool IsInPlatform(Vector2 ChPos)
+        public bool IsCharacterInPlatform(Vector2 ChPos)
         {
             var platformRectangle = new Rectangle((int)Pos.X, (int)Pos.Y, Width, Height);
             var characterRectangle = new Rectangle((int)ChPos.X, (int)ChPos.Y, Character.size, Character.size);
             return platformRectangle.Intersects(characterRectangle);
         }
 
+
+
         public bool CorrectPositionWithPlat(Vector2 posCharact)
         {
-            return IsInMap(posCharact) && !this.IsInPlatform(posCharact);
+            return IsInMap(posCharact) && !this.IsCharacterInPlatform(posCharact);
         }
     }
 }

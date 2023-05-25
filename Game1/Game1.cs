@@ -49,7 +49,7 @@ namespace Game1
                     Exit();
             }
             Entity.Character.Update(keys);
-            Entity.Enemy.Update();
+            Entity.Enemy.Update(gameTime);
 
             base.Update(gameTime);
         }

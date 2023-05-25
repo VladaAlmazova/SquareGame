@@ -15,7 +15,9 @@ namespace Game1
         
         public void Add(Platform platform)
         {
-            AllMoney.Add(new Money(platform));
+            var rand = new Random();
+            if(rand.Next(0, 2) == 1 && platform.Pos.Y - Money.size < Height)
+                AllMoney.Add(new Money(platform));
         }
 
         public void Delite(Money money)
@@ -38,6 +40,14 @@ namespace Game1
                 AllMoney[i].Update(speed);
             }
         }
+
+        public void CollectWhatCan()
+        {
+            for(int j = 0; j < AllMoney.Count; j++)
+            {
+                AllMoney[j].TryCollectMoney();
+            }
+        }
     }
 
 
@@ -46,7 +56,7 @@ namespace Game1
         Color color = Color.White;
         public static Texture2D texture2D { get; set; }
         public Vector2 Pos;
-        public int size = 40;
+        static public int size = 40;
 
         public Money(Platform platform)
         {
@@ -55,16 +65,23 @@ namespace Game1
 
             Pos = new Vector2((x1 + x2) / 2 - (size / 2), platform.Pos.Y - size);
         }
-        public void Update(int speed)
+
+        public void TryCollectMoney()
         {
-            Pos.X -= speed;
-            var l_ClUp = Character.Pos;
-            var r_CrDow = new Vector2(Character.Pos.X + Character.size , Character.Pos.Y + Character.size);
-            if (l_ClUp.X <= Pos.X && Pos.X < r_CrDow.X && l_ClUp.Y <= Pos.Y && Pos.Y < r_CrDow.Y)
+            var moneyRectangle = new Rectangle((int)Pos.X, (int)Pos.Y, size, size);
+            var characterRectangle = new Rectangle((int)Character.Pos.X, (int)Character.Pos.Y, Character.size, Character.size);
+            if (characterRectangle.Contains(moneyRectangle))
             {
                 MoneyPack.Delite(this);
                 Score++;
             }
+        }
+
+        public void Update(int speed)
+        {
+            Pos.X -= speed;
+            if(Pos.X + size < 0)
+                MoneyPack.Delite(this);
         }
 
         public void Draw(GameTime gameTime)

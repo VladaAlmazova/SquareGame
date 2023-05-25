@@ -17,17 +17,21 @@ namespace Game1
         public bool GameOver = false;
         public int speed; // делитель 20;
 
-        public Enemy(int speed = 5)
+        public Enemy(int speed = 4)
         {
             this.speed = speed;
-            Pos = new Vector2(-Width-200, 0);
+            Pos = new Vector2(-Width+50, 0);
         }
 
-        public void Update()
+        public void Update(GameTime gameTime)
         {
-            Pos.X += speed;
-            if (Character.Pos.X < Pos.X + Width)
-                GameOver = true;
+            var seconds = gameTime.TotalGameTime.Seconds;
+            if(seconds >= 2)
+            {
+                Pos.X += speed;
+                if (Character.Pos.X < Pos.X + Width)
+                    GameOver = true;
+            }            
         }
 
         public void Draw(GameTime gameTime)
