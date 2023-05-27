@@ -85,6 +85,13 @@
 /processorParam:TextureFormat=Color
 /build:money.png;money
 
+#begin TextMoney.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:TextMoney.spritefont
+
 #begin персонаж120х120.png
 /importer:TextureImporter
 /processor:TextureProcessor
