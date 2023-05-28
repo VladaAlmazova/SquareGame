@@ -16,8 +16,9 @@ namespace Game1
         public void Add(Platform platform)
         {
             var rand = new Random();
-            if(rand.Next(0, 2) == 1 && platform.Pos.Y - Money.size < Height)
+            if(rand.Next(0, 2) == 1 && platform.Pos.Y - Money.size > 0)
                 AllMoney.Add(new Money(platform));
+            DeliteMoney();
         }
 
         public void Delite(Money money)
@@ -41,11 +42,23 @@ namespace Game1
             }
         }
 
+        private void DeliteMoney() //удаляет первый элемент листа платформ
+        {
+            while (AllMoney.Count > 0 && AllMoney[0].Pos.X + Money.size < 0)//(!IsInMap(platforms[0].r_down_p))
+            {
+                AllMoney.RemoveAt(0);
+            }
+        }
+
         public void CollectWhatCan()
         {
             for(int j = 0; j < AllMoney.Count; j++)
             {
-                AllMoney[j].TryCollectMoney();
+                if(AllMoney[j].TryCollectMoney())
+                {
+                    MoneyPack.Delite(AllMoney[j]);
+                    Score++;
+                }
             }
         }
     }
@@ -66,22 +79,16 @@ namespace Game1
             Pos = new Vector2((x1 + x2) / 2 - (size / 2), platform.Pos.Y - size);
         }
 
-        public void TryCollectMoney()
+        public bool TryCollectMoney()
         {
             var moneyRectangle = new Rectangle((int)Pos.X, (int)Pos.Y, size, size);
             var characterRectangle = new Rectangle((int)Character.Pos.X, (int)Character.Pos.Y, Character.size, Character.size);
-            if (characterRectangle.Contains(moneyRectangle))
-            {
-                MoneyPack.Delite(this);
-                Score++;
-            }
+            return characterRectangle.Contains(moneyRectangle);
         }
 
         public void Update(int speed)
         {
             Pos.X -= speed;
-            if(Pos.X + size < 0)
-                MoneyPack.Delite(this);
         }
 
         public void Draw(GameTime gameTime)

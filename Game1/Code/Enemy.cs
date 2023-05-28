@@ -14,13 +14,13 @@ namespace Game1
         Color color = Color.White;
         public static Texture2D texture2D { get; set; }
         public Vector2 Pos;
-        public bool GameOver = false;
+        //public bool GameOver = false;
         public int speed; // делитель 20;
 
         public Enemy(int speed = 4)
         {
             this.speed = speed;
-            Pos = new Vector2(-Width+50, 0);
+            Pos = new Vector2(-MapWidth+50, 0);
         }
 
         public void Update(GameTime gameTime)
@@ -29,14 +29,16 @@ namespace Game1
             if(seconds >= 2)
             {
                 Pos.X += speed;
-                if (Character.Pos.X < Pos.X + Width)
-                    GameOver = true;
-            }            
+            }
+            if (Character.Pos.X < Pos.X + MapWidth)
+            {
+                GameOver.IsTheEnd = true;
+            }
         }
 
         public void Draw(GameTime gameTime)
         {
-            Entity.SpriteBatch.Draw(texture2D, Pos, color);
+            SpriteBatch.Draw(texture2D, Pos, color);
         }
     }
 }

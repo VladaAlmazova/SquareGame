@@ -81,8 +81,8 @@ namespace Game1
                 if (wasRight && posTest.X >= FocusPos.X) // Если кубик падает, то не двигать карту // все же двигать 
                 {
                     Platforms.GoToLeft(speede);
-                    MoneyPack.Update(speede);
-                    if(Enemy.Pos.X + Width + 300>= 0)
+                    //MoneyPack.Update(speede);
+                    if(Enemy.Pos.X + MapWidth + 300>= 0)
                         Enemy.Pos.X -= speede;
 
                     DistanceEmpty += speede;//для появления новой плашки 

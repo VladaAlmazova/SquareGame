@@ -8,10 +8,9 @@ namespace Game1
     public class Game1 : Game 
     {
         private GraphicsDeviceManager graphics;
-        private SpriteBatch spriteBatch;
-        SpriteFont textBlock;
+        private SpriteBatch spriteBatch;     
 
-        Texture2D gameOverTexture;
+        
 
         public Game1()
         {
@@ -37,8 +36,9 @@ namespace Game1
             Platform.texture2D = Content.Load<Texture2D>("platform");//20*20
             Enemy.texture2D = Content.Load<Texture2D>("Enemy1");
             Money.texture2D = Content.Load<Texture2D>("money");
-            gameOverTexture = Content.Load<Texture2D>("gameOver");
-            textBlock = Content.Load<SpriteFont>("TextMoney");
+            GameOver.gameOverTexture = Content.Load<Texture2D>("gameOver");
+            Texts.TextMoney = Content.Load<SpriteFont>("TextMoney");
+            Texts.TextTime = Content.Load<SpriteFont>("TextTime");
         }
 
         protected override void Update(GameTime gameTime)
@@ -60,17 +60,8 @@ namespace Game1
             GraphicsDevice.Clear(Color.WhiteSmoke);
             spriteBatch.Begin();
             Entity.Draw(gameTime);
-            if(Entity.Enemy.GameOver) // конец игры
-                spriteBatch.Draw(gameOverTexture, Vector2.Zero, Color.White);
-
-            Vector2 position = new Vector2(1400, 20); // position
-            Color color = Color.Black;// color yellow
-            spriteBatch.DrawString(textBlock, Entity.Score.ToString(), position, color); // draw text
-
-            spriteBatch.End();
-
             
-
+            spriteBatch.End();           
             base.Draw(gameTime);
         }
     }

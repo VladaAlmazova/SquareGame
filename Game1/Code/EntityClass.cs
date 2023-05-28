@@ -14,7 +14,7 @@ namespace Game1
         private const int CharSize = 120;
         const int indent = 0;//10; кратное 5
 
-        public static int Width, Height;
+        public static int MapWidth, MapHeight;
         public static SpriteBatch SpriteBatch { get; set; }
         static public Character Character { get; set; }
         static public Enemy Enemy { get; set; }
@@ -28,11 +28,13 @@ namespace Game1
         public static PackPlatforms Platforms = new PackPlatforms();
         public static MoneyPack MoneyPack = new MoneyPack();
 
+        public static GameOver GameOver = new GameOver();
+
         public static void InIt(SpriteBatch spriteBatch, int width, int height)
         {
             SpriteBatch = spriteBatch;
-            Width = width;
-            Height = height;
+            MapWidth = width;
+            MapHeight = height;
             Character = new Character(new Vector2(200, 800));
             Enemy = new Enemy();
 
@@ -45,11 +47,13 @@ namespace Game1
                 Platforms.platforms[i].Draw(gameTime);
             MoneyPack.Draw(gameTime);
             Enemy.Draw(gameTime);
+            Texts.Draw(gameTime);
+            GameOver.Draw();
         }
 
         public static bool IsInMap(Vector2 pos)
         {
-            return !(pos.X < indent || pos.X + CharSize > Width - indent || pos.Y < indent || pos.Y + CharSize > Height - indent);    
+            return !(pos.X < indent || pos.X + CharSize > MapWidth - indent || pos.Y < indent || pos.Y + CharSize > MapHeight - indent);    
         }
     }   
 }

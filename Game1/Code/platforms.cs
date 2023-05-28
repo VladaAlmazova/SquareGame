@@ -48,6 +48,7 @@ namespace Game1
             {
                 Platforms.platforms[i].Update(speed);
             }
+            MoneyPack.Update(speed);
         }
 
         public bool CorrectPositionWithAllPlat(Vector2 posCharact)
@@ -74,15 +75,12 @@ namespace Game1
             Pos = pos;
             countPlat = count;
             Width = Width * count;
-
-            l_up_p = new Vector2(Pos.X, Pos.Y);
             r_down_p = new Vector2(Pos.X + Width, Pos.Y + Height);
         }
 
         public void Update(int speed)
         {
             Pos.X -= speed;//charr.speed;
-            l_up_p = new Vector2(Pos.X, Pos.Y);///dop
             r_down_p = new Vector2(Pos.X + Width, Pos.Y + Height);///dop
         }
 
@@ -101,7 +99,6 @@ namespace Game1
         }
 
 
-        Vector2 l_up_p; //координаты левого верхнего угла платформы
         public Vector2 r_down_p; //правого нижнего 
 
         public bool IsCharacterInPlatform(Vector2 ChPos)
@@ -110,7 +107,6 @@ namespace Game1
             var characterRectangle = new Rectangle((int)ChPos.X, (int)ChPos.Y, Character.size, Character.size);
             return platformRectangle.Intersects(characterRectangle);
         }
-
 
 
         public bool CorrectPositionWithPlat(Vector2 posCharact)
