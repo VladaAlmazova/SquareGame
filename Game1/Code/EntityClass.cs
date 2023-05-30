@@ -22,8 +22,7 @@ namespace Game1
         public static readonly Vector2 FocusPos = new Vector2(840, 800);
         public static int Score = 0;
 
-        static public int DistanceEmpty = 0;
-        static public Random RandDist = new Random();
+        
 
         public static PackPlatforms Platforms = new PackPlatforms();
         public static MoneyPack MoneyPack = new MoneyPack();

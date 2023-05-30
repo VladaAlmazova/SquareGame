@@ -12,6 +12,9 @@ namespace Game1
 {
     class PackPlatforms : Entity //удаление платформ
     {
+        static public int DistanceEmpty = 0;
+        static public Random RandDist = new Random();
+
         public List<Platform> platforms = new List<Platform>()
         {
             new Platform(new Vector2(400+80, 700), 10),
@@ -19,6 +22,16 @@ namespace Game1
             new Platform(new Vector2(800+80, 460), 10),
             //new Platform(new Vector2(200, 540), 8),
         };
+
+        public void TryAddPlatforn(int distEmpty)
+        {
+            PackPlatforms.DistanceEmpty += distEmpty;//для появления новой плашки 
+
+            if (PackPlatforms.DistanceEmpty >= 20 * PackPlatforms.RandDist.NextInt64(20, 50))
+            {
+                Platforms.AddPlatform();
+            }
+        }
 
         public void AddPlatform()
         {
@@ -30,7 +43,7 @@ namespace Game1
 
             MoneyPack.Add(newPlatform);
 
-            Entity.DistanceEmpty = 0;
+            DistanceEmpty = 0;
             DelitePlatform();
         }
 
@@ -51,12 +64,12 @@ namespace Game1
             MoneyPack.Update(speed);
         }
 
-        public bool CorrectPositionWithAllPlat(Vector2 posCharact)
+        public (bool, Platform) CorrectPositionWithAllPlat(Vector2 posCharact)
         {
             for (int i = 0; i < platforms.Count; i++)
                 if (!platforms[i].CorrectPositionWithPlat(posCharact))
-                    return false;
-            return true;
+                    return (false, platforms[i]) ;
+            return (true, null);
         }
 
     }
@@ -111,7 +124,7 @@ namespace Game1
 
         public bool CorrectPositionWithPlat(Vector2 posCharact)
         {
-            return IsInMap(posCharact) && !this.IsCharacterInPlatform(posCharact);
+            return IsInMap(posCharact) && !IsCharacterInPlatform(posCharact);
         }
     }
 }

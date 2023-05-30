@@ -9,13 +9,21 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Game1
 {
+    /*enum MapFrame
+    {
+        up = Vector2(),
+        down,
+        right,
+        left
+    }*/
+
     class Character : Entity
     {
         Color color = Color.White;
         public static Texture2D texture2D { get; set; }
         public Vector2 Pos;
         public const int size = 120;
-        public int speed = 10; // делитель 20
+        public int speed = 13;//15;//10; // делитель 20
         public int gravity = 10;// делитель 20;
 
         public int nowSpeed = 10;
@@ -31,7 +39,7 @@ namespace Game1
         private void CanFall(Vector2 pos) //3plat
         {
             pos.Y += 5;
-            if (Platforms.CorrectPositionWithAllPlat(pos))
+            if (Platforms.CorrectPositionWithAllPlat(pos).Item1)
                 Fall = true;
             pos.Y -= 5;
 
@@ -71,38 +79,130 @@ namespace Game1
         private bool SomethingBad = false;
         private int Ups = 0;
 
-        private Vector2 CorrectPosUpdate(Vector2 posTest, int speede)
+        private static int Ws = 0;
+
+        private Vector2 CorrectPosUpdate(Vector2 posTest, int dist)
         {
             var correctPos = Pos;
             if (Pos == posTest)
                 return Pos;
-            if (Platforms.CorrectPositionWithAllPlat(posTest))
+            var (isCorrect, crashPlat) = Platforms.CorrectPositionWithAllPlat(posTest);
+
+            if(!isCorrect)
             {
-                if (wasRight && posTest.X >= FocusPos.X) // Если кубик падает, то не двигать карту // все же двигать 
+                SomethingBad = true;
+                posTest = Alignment(posTest, crashPlat);//
+                if (Pos == posTest)
+                    return Pos;
+                dist = (int)Math.Abs(Pos.X - posTest.X);//
+                var (iscor2, crplat) = Platforms.CorrectPositionWithAllPlat(posTest);
+                isCorrect = iscor2;
+            }
+            /*if(!isCorrect)
+                SomethingBad = true;
+            posTest = Alignment(posTest, crashPlat);//
+            if (Pos == posTest)
+                return Pos;
+            dist = (int)Math.Abs(Pos.X - posTest.X);//
+            var (iscor2, crplat) = Platforms.CorrectPositionWithAllPlat(posTest);*/
+
+            if (isCorrect)//iscor2)//isCorrect)
+            {
+                if (wasRight && posTest.X >= FocusPos.X)
                 {
-                    Platforms.GoToLeft(speede);
-                    //MoneyPack.Update(speede);
+                    Platforms.GoToLeft(dist);
                     if(Enemy.Pos.X + MapWidth + 300>= 0)
-                        Enemy.Pos.X -= speede;
-
-                    DistanceEmpty += speede;//для появления новой плашки 
-
-                    if (DistanceEmpty >= 20 * RandDist.NextInt64(20, 50))
-                    {
-                        Platforms.AddPlatform();
-                    }
+                        Enemy.Pos.X -= dist;
+                    Platforms.TryAddPlatforn(dist);
                     correctPos.Y = posTest.Y;
                 }
                 else
                     correctPos = posTest;
             }
             else
+            {
                 SomethingBad = true;
+                //correctPos = Alignment(posTest, crashPlat);
+            }
+               
+            return correctPos;
+        }
+
+        private Vector2 Alignment(Vector2 incorrectPos, Platform? crashPlat)
+        {
+            if(crashPlat == null)
+                return incorrectPos;
+            var correctPos = incorrectPos;
+            if(!IsInMap(incorrectPos))
+            {
+                if (incorrectPos.X < 0)
+                    correctPos.X = 0;
+                if (incorrectPos.X > MapWidth - Character.size)
+                    correctPos.X = MapWidth - Character.size;
+                if(incorrectPos.Y < 0)
+                    correctPos.Y = 0;
+                if (incorrectPos.Y > MapHeight - Character.size)
+                    correctPos.Y = MapHeight - Character.size;
+                if (crashPlat.CorrectPositionWithPlat(correctPos))
+                    return correctPos;
+            }
+            
+            var test2 = correctPos;
+            var rectan = new Rectangle((int)crashPlat.Pos.X, (int)crashPlat.Pos.Y, crashPlat.Width, crashPlat.Height);
+            switch (lastKey)
+            {
+                case Keys.Left:
+                    //if(Math.Abs(test2.X - rectan.Right) <= speed)
+                    if(Math.Abs(test2.X - rectan.Right) <= Math.Abs(Pos.X - incorrectPos.X))
+                        test2.X = crashPlat.Pos.X + crashPlat.Width;
+                    //CanFall(test2);
+                    break;
+                case Keys.Right:
+                    if (Math.Abs(rectan.Left - (test2.X + size)) <= Math.Abs(Pos.X - incorrectPos.X))//speed)
+                        test2.X = crashPlat.Pos.X - Character.size;
+                    //CanFall(test2);
+                    break;
+                case Keys.Up:
+                    test2.Y = crashPlat.Pos.Y + crashPlat.Height;
+                    break;
+                default:
+                    break;
+            }
+            //if(test2 == correctPos)
+            correctPos = test2;
+            /*if (Fall)
+            {
+                var test = correctPos;
+                if (Math.Abs(test.Y + Character.size - crashPlat.Pos.Y) <= gravity)//speed/2)
+                    test.Y = crashPlat.Pos.Y - Character.size;
+                if (crashPlat.CorrectPositionWithPlat(test))
+                    return test;
+            }*/
+            if (Math.Abs(correctPos.Y + Character.size - crashPlat.Pos.Y) < gravity)//speed/2)
+            {
+                correctPos.Y = crashPlat.Pos.Y - Character.size;
+            //Fall = false;
+            }
+            var a1 = new Vector2(correctPos.X, correctPos.Y + size);
+            var a2 = new Vector2(correctPos.X + size, correctPos.Y + size);
+
+            if (correctPos.Y + Character.size - crashPlat.Pos.Y == gravity && 
+                (rectan.Contains(correctPos.X, correctPos.Y + size)|| 
+                rectan.Contains(correctPos.X + size, correctPos.Y + size)))
+                correctPos.Y = crashPlat.Pos.Y - Character.size;
+
+            /*if (Math.Abs(correctPos.Y + Character.size - crashPlat.Pos.Y) <= gravity)//speed/2)
+                correctPos.Y = crashPlat.Pos.Y - Character.size;*/
+            if (!crashPlat.CorrectPositionWithPlat(correctPos))
+                SomethingBad = true;
+            //correctPos = test2;
+
             return correctPos;
         }
 
         public void Update(Keys[] keys)
         {
+            var startPos = Pos;
             var posTest = Pos;
             if (!Fall)
             {
@@ -118,20 +218,7 @@ namespace Game1
             {
                 posTest = PressingButton(posTest, lastKey, speed_e);
             }
-            //n
-            var p1 = CorrectPosUpdate(posTest, speed_e);
-            if (SomethingBad)
-            {
-                if (lastKey == Keys.Right)
-                {
-                    p1 = CorrectPosUpdate(new Vector2(posTest.X - 5, posTest.Y), 5);
-                }
-                if (lastKey == Keys.Left)
-                {
-                    p1 = CorrectPosUpdate(new Vector2(posTest.X + 5, posTest.Y), 5);
-                }
-            }
-            Pos = p1;
+            Pos = CorrectPosUpdate(posTest, speed_e);//p1;
             //            
             if (SomethingBad)
             {
@@ -158,6 +245,13 @@ namespace Game1
             SomethingBad = false;
 
             MoneyPack.CollectWhatCan();
+
+            if (startPos == Pos)
+                Ws++;
+            else
+                Ws = 0;
+            if (Ws >= 100)
+                Ws = Ws;
             /*if (Ups == 0)
                 nowSpeed = maxspeed;
             else
