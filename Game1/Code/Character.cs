@@ -9,25 +9,18 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Game1
 {
-    /*enum MapFrame
-    {
-        up = Vector2(),
-        down,
-        right,
-        left
-    }*/
-
     class Character : Entity
     {
         Color color = Color.White;
         public static Texture2D texture2D { get; set; }
         public Vector2 Pos;
         public const int size = 120;
-        public int speed = 13;//15;//10; // делитель 20
+        //public int nowSpeed = 13;//15;//10; // делитель 20
         public int gravity = 10;// делитель 20;
 
         public int nowSpeed = 10;
-        private int maxspeed = 10;
+        private int maxspeed = 20;
+        public double energy = 1;
         public Character(Vector2 pos)
         {
             Pos = pos;
@@ -98,15 +91,9 @@ namespace Game1
                 var (iscor2, crplat) = Platforms.CorrectPositionWithAllPlat(posTest);
                 isCorrect = iscor2;
             }
-            /*if(!isCorrect)
-                SomethingBad = true;
-            posTest = Alignment(posTest, crashPlat);//
-            if (Pos == posTest)
-                return Pos;
             dist = (int)Math.Abs(Pos.X - posTest.X);//
-            var (iscor2, crplat) = Platforms.CorrectPositionWithAllPlat(posTest);*/
 
-            if (isCorrect)//iscor2)//isCorrect)
+            if (isCorrect)
             {
                 if (wasRight && posTest.X >= FocusPos.X)
                 {
@@ -122,7 +109,6 @@ namespace Game1
             else
             {
                 SomethingBad = true;
-                //correctPos = Alignment(posTest, crashPlat);
             }
                
             return correctPos;
@@ -152,15 +138,12 @@ namespace Game1
             switch (lastKey)
             {
                 case Keys.Left:
-                    //if(Math.Abs(test2.X - rectan.Right) <= speed)
                     if(Math.Abs(test2.X - rectan.Right) <= Math.Abs(Pos.X - incorrectPos.X))
                         test2.X = crashPlat.Pos.X + crashPlat.Width;
-                    //CanFall(test2);
                     break;
                 case Keys.Right:
                     if (Math.Abs(rectan.Left - (test2.X + size)) <= Math.Abs(Pos.X - incorrectPos.X))//speed)
                         test2.X = crashPlat.Pos.X - Character.size;
-                    //CanFall(test2);
                     break;
                 case Keys.Up:
                     test2.Y = crashPlat.Pos.Y + crashPlat.Height;
@@ -168,34 +151,16 @@ namespace Game1
                 default:
                     break;
             }
-            //if(test2 == correctPos)
             correctPos = test2;
-            /*if (Fall)
-            {
-                var test = correctPos;
-                if (Math.Abs(test.Y + Character.size - crashPlat.Pos.Y) <= gravity)//speed/2)
-                    test.Y = crashPlat.Pos.Y - Character.size;
-                if (crashPlat.CorrectPositionWithPlat(test))
-                    return test;
-            }*/
+
             if (Math.Abs(correctPos.Y + Character.size - crashPlat.Pos.Y) < gravity)//speed/2)
             {
                 correctPos.Y = crashPlat.Pos.Y - Character.size;
             //Fall = false;
             }
-            var a1 = new Vector2(correctPos.X, correctPos.Y + size);
-            var a2 = new Vector2(correctPos.X + size, correctPos.Y + size);
 
-            if (correctPos.Y + Character.size - crashPlat.Pos.Y == gravity && 
-                (rectan.Contains(correctPos.X, correctPos.Y + size)|| 
-                rectan.Contains(correctPos.X + size, correctPos.Y + size)))
-                correctPos.Y = crashPlat.Pos.Y - Character.size;
-
-            /*if (Math.Abs(correctPos.Y + Character.size - crashPlat.Pos.Y) <= gravity)//speed/2)
-                correctPos.Y = crashPlat.Pos.Y - Character.size;*/
             if (!crashPlat.CorrectPositionWithPlat(correctPos))
                 SomethingBad = true;
-            //correctPos = test2;
 
             return correctPos;
         }
@@ -208,12 +173,12 @@ namespace Game1
             {
                 if (keys.Length > 0)
                 {
-                    posTest = PressingButton(posTest, keys[0], speed);//nowSpeed);//
+                    posTest = PressingButton(posTest, keys[0], nowSpeed);//nowSpeed);//
                 }
             }
-            var speed_e = speed;//nowSpeed;//
+            var speed_e = nowSpeed;//nowSpeed;//
             if (Fall)
-                speed_e = speed / 2;//nowSpeed / 2;//
+                speed_e = nowSpeed / 2;//nowSpeed / 2;//
             if (Pos == posTest)//если ничего не нажато проолжаем в том же духе
             {
                 posTest = PressingButton(posTest, lastKey, speed_e);
@@ -227,6 +192,7 @@ namespace Game1
                 if (lastKey == Keys.Up)
                 {
                     lastKey = Keys.S;
+                    Ups = 0;
                 }
 
             }
@@ -234,6 +200,8 @@ namespace Game1
             if (Fall)
             {
                 posTest.Y += gravity;
+                Ups = 0;
+
             }
 
 
@@ -241,24 +209,32 @@ namespace Game1
             if (SomethingBad)
             {
                 Fall = false;
+                Ups = 0;
             }
             SomethingBad = false;
 
             MoneyPack.CollectWhatCan();
 
-            if (startPos == Pos)
-                Ws++;
-            else
-                Ws = 0;
-            if (Ws >= 100)
-                Ws = Ws;
-            /*if (Ups == 0)
-                nowSpeed = maxspeed;
+            if (Ups == 0)
+            {
+                nowSpeed = (int)Math.Round(maxspeed * energy);
+                energy += 0.004;
+                if (energy >= 1)
+                    energy = 1;
+            }            
             else
             {
-                var a = (int)Math.Round((double)Ups / 20);
-                nowSpeed = speed - 2*a;
-            } */
+               
+                energy -= 0.011;
+                if(energy <= 0 )
+                {
+                    energy = 0;
+                    lastKey = Keys.S;
+                    Fall = true;
+                }
+                    
+                nowSpeed = (int)Math.Round(maxspeed * energy);
+            }
         }
 
         public void Draw(GameTime gameTime)
@@ -266,4 +242,6 @@ namespace Game1
             Entity.SpriteBatch.Draw(texture2D, Pos, color);
         }
     }
+
+    
 }

@@ -15,20 +15,22 @@ namespace Game1
         public static Texture2D texture2D { get; set; }
         public Vector2 Pos;
         //public bool GameOver = false;
-        public int speed; // делитель 20;
+        public static double speed; // делитель 20;
+        private static int startSpeed;
 
-        public Enemy(int speed = 4)
+        public Enemy(int startSpeed = 4)
         {
-            this.speed = speed;
+            /*this*/
+            Enemy.startSpeed = startSpeed;
             Pos = new Vector2(-MapWidth+50, 0);
         }
 
         public void Update(GameTime gameTime)
         {
             var seconds = gameTime.TotalGameTime.Seconds;
-            if(seconds >= 2)
+            if(seconds >= 1)
             {
-                Pos.X += speed;
+                Pos.X += (int)Math.Round(speed);
             }
             if (Character.Pos.X < Pos.X + MapWidth)
             {
@@ -39,6 +41,9 @@ namespace Game1
         public void Draw(GameTime gameTime)
         {
             SpriteBatch.Draw(texture2D, Pos, color);
+            speed = startSpeed +  gameTime.TotalGameTime.TotalSeconds/ 10;
+            if(speed >= 7)
+                speed = 7;
         }
     }
 }

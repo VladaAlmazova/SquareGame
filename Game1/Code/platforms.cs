@@ -27,7 +27,7 @@ namespace Game1
         {
             PackPlatforms.DistanceEmpty += distEmpty;//для появления новой плашки 
 
-            if (PackPlatforms.DistanceEmpty >= 20 * PackPlatforms.RandDist.NextInt64(20, 50))
+            if (PackPlatforms.DistanceEmpty >= 20 * PackPlatforms.RandDist.NextInt64(20, 70))
             {
                 Platforms.AddPlatform();
             }
@@ -36,7 +36,7 @@ namespace Game1
         public void AddPlatform()
         {
             var rand = new Random();
-            var newY = rand.NextInt64(20, 880);
+            var newY = rand.NextInt64(160, 880);
             newY -= newY % 20;
             var newPlatform = new Platform(new Vector2(1660, newY), (int)rand.NextInt64(6, 15));
             platforms.Add(newPlatform);

@@ -83,7 +83,7 @@ namespace Game1
         {
             var moneyRectangle = new Rectangle((int)Pos.X, (int)Pos.Y, size, size);
             var characterRectangle = new Rectangle((int)Character.Pos.X, (int)Character.Pos.Y, Character.size, Character.size);
-            return characterRectangle.Contains(moneyRectangle);
+            return characterRectangle.Intersects(moneyRectangle);
         }
 
         public void Update(int speed)

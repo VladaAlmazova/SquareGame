@@ -24,6 +24,14 @@ namespace Game1
                 gameTime.TotalGameTime.Minutes.ToString() + " : " + gameTime.TotalGameTime.Seconds.ToString(), 
                 new Vector2(20, 880), 
                 Color.Black); // draw text
+            Entity.SpriteBatch.DrawString(TextTime,
+                (Math.Round(Entity.Character.energy*100)).ToString() + " % " ,
+                new Vector2(1400, 60),
+                Color.Black); // draw text
+            Entity.SpriteBatch.DrawString(TextTime,
+                (Math.Round(Enemy.speed)).ToString() + "  ",
+                new Vector2(1400, 100),
+                Color.Black); // draw text
         }
     }
 }
