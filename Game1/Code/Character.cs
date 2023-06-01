@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -15,8 +11,7 @@ namespace Game1
         public static Texture2D texture2D { get; set; }
         public Vector2 Pos;
         public const int size = 120;
-        //public int nowSpeed = 13;//15;//10; // делитель 20
-        public int gravity = 10;// делитель 20;
+        public int gravity = 10;
 
         public int nowSpeed = 10;
         private int maxspeed = 20;
@@ -29,7 +24,7 @@ namespace Game1
         public Keys lastKey = Keys.S;
         private bool Fall = false;
 
-        private void CanFall(Vector2 pos) //3plat
+        private void CanFall(Vector2 pos) 
         {
             pos.Y += 5;
             if (Platforms.CorrectPositionWithAllPlat(pos).Item1)
@@ -84,14 +79,14 @@ namespace Game1
             if(!isCorrect)
             {
                 SomethingBad = true;
-                posTest = Alignment(posTest, crashPlat);//
+                posTest = Alignment(posTest, crashPlat);
                 if (Pos == posTest)
                     return Pos;
-                dist = (int)Math.Abs(Pos.X - posTest.X);//
+                dist = (int)Math.Abs(Pos.X - posTest.X);
                 var (iscor2, crplat) = Platforms.CorrectPositionWithAllPlat(posTest);
                 isCorrect = iscor2;
             }
-            dist = (int)Math.Abs(Pos.X - posTest.X);//
+            dist = (int)Math.Abs(Pos.X - posTest.X);
 
             if (isCorrect)
             {
@@ -142,7 +137,7 @@ namespace Game1
                         test2.X = crashPlat.Pos.X + crashPlat.Width;
                     break;
                 case Keys.Right:
-                    if (Math.Abs(rectan.Left - (test2.X + size)) <= Math.Abs(Pos.X - incorrectPos.X))//speed)
+                    if (Math.Abs(rectan.Left - (test2.X + size)) <= Math.Abs(Pos.X - incorrectPos.X))
                         test2.X = crashPlat.Pos.X - Character.size;
                     break;
                 case Keys.Up:
@@ -153,10 +148,9 @@ namespace Game1
             }
             correctPos = test2;
 
-            if (Math.Abs(correctPos.Y + Character.size - crashPlat.Pos.Y) < gravity)//speed/2)
+            if (Math.Abs(correctPos.Y + Character.size - crashPlat.Pos.Y) < gravity)
             {
                 correctPos.Y = crashPlat.Pos.Y - Character.size;
-            //Fall = false;
             }
 
             if (!crashPlat.CorrectPositionWithPlat(correctPos))
@@ -173,21 +167,21 @@ namespace Game1
             {
                 if (keys.Length > 0)
                 {
-                    posTest = PressingButton(posTest, keys[0], nowSpeed);//nowSpeed);//
+                    posTest = PressingButton(posTest, keys[0], nowSpeed);
                 }
             }
-            var speed_e = nowSpeed;//nowSpeed;//
+            var speed_e = nowSpeed;
             if (Fall)
-                speed_e = nowSpeed / 2;//nowSpeed / 2;//
+                speed_e = nowSpeed / 2;
             if (Pos == posTest)//если ничего не нажато проолжаем в том же духе
             {
                 posTest = PressingButton(posTest, lastKey, speed_e);
             }
-            Pos = CorrectPosUpdate(posTest, speed_e);//p1;
-            //            
+            Pos = CorrectPosUpdate(posTest, speed_e);
+       
             if (SomethingBad)
             {
-                Fall = true; //n
+                Fall = true; 
                 posTest = Pos;
                 if (lastKey == Keys.Up)
                 {
@@ -215,29 +209,8 @@ namespace Game1
 
             MoneyPack.CollectWhatCan();
 
-            /*if (Ups == 0)
-            {
-                nowSpeed = (int)Math.Round(maxspeed * energy);
-                energy += 0.004;
-                if (energy >= 1)
-                    energy = 1;
-            }            
-            else
-            {
-               
-                energy -= 0.011;
-                if(energy <= 0 )
-                {
-                    energy = 0;
-                    lastKey = Keys.S;
-                    Fall = true;
-                }
-                    
-                nowSpeed = (int)Math.Round(maxspeed * energy);
-            }*/
             if (Ups == 0)
             {
-                //nowSpeed = (int)Math.Round(maxspeed * energy);
                 Energy.energy += 0.004;
                 if (Energy.energy >= 1)
                     Energy.energy = 1;

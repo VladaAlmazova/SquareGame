@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace Game1
 {
@@ -14,13 +9,11 @@ namespace Game1
         Color color = Color.White;
         public static Texture2D texture2D { get; set; }
         public Vector2 Pos;
-        //public bool GameOver = false;
-        public static double speed; // делитель 20;
+        public static double speed;
         private static int startSpeed;
 
         public Enemy(int startSpeed = 4)
         {
-            /*this*/
             Enemy.startSpeed = startSpeed;
             Pos = new Vector2(-MapWidth+50, 0);
         }

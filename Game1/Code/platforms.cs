@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 
 namespace Game1
@@ -20,7 +16,6 @@ namespace Game1
             new Platform(new Vector2(400+80, 700), 10),
             new Platform(new Vector2(600+80, 600), 10),
             new Platform(new Vector2(800+80, 460), 10),
-            //new Platform(new Vector2(200, 540), 8),
         };
 
         public void TryAddPlatforn(int distEmpty)
@@ -49,7 +44,7 @@ namespace Game1
 
         private void DelitePlatform() //удаляет первый элемент листа платформ
         {
-            while (platforms[0].r_down_p.X < 0)//(!IsInMap(platforms[0].r_down_p))
+            while (platforms[0].r_down_p.X < 0)
             {
                 platforms.RemoveAt(0);
             }
@@ -80,7 +75,7 @@ namespace Game1
         public static Texture2D texture2D { get; set; }
         public Vector2 Pos;
         public int Width = 20;
-        public int Height = 60;//new
+        public int Height = 60;
         public int pictureSize = 20;
         private int countPlat = 0;
         public Platform(Vector2 pos, int count)
@@ -93,8 +88,8 @@ namespace Game1
 
         public void Update(int speed)
         {
-            Pos.X -= speed;//charr.speed;
-            r_down_p = new Vector2(Pos.X + Width, Pos.Y + Height);///dop
+            Pos.X -= speed;
+            r_down_p = new Vector2(Pos.X + Width, Pos.Y + Height);
         }
 
         public void Draw(GameTime gameTime)

@@ -33,10 +33,10 @@ namespace Game1
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
             Entity.InIt(spriteBatch, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
-            Character.texture2D = Content.Load<Texture2D>("custom/character_n");//"character");//"main_character"); //120*120
-            Platform.texture2D = Content.Load<Texture2D>("custom/platform_n");//"platform");//20*20
+            Character.texture2D = Content.Load<Texture2D>("custom/character_n");
+            Platform.texture2D = Content.Load<Texture2D>("custom/platform_n");
             Enemy.texture2D = Content.Load<Texture2D>("Enemy1");
-            Money.texture2D = Content.Load<Texture2D>("custom/money_n");//"money");
+            Money.texture2D = Content.Load<Texture2D>("custom/money_n");
             GameOver.gameOverTexture = Content.Load<Texture2D>("gameOver");
             Texts.TextMoney = Content.Load<SpriteFont>("TextMoney");
             Texts.TextTime = Content.Load<SpriteFont>("TextTime");

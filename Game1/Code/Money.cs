@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace Game1
 {
@@ -44,7 +40,7 @@ namespace Game1
 
         private void DeliteMoney() //удаляет первый элемент листа платформ
         {
-            while (AllMoney.Count > 0 && AllMoney[0].Pos.X + Money.size < 0)//(!IsInMap(platforms[0].r_down_p))
+            while (AllMoney.Count > 0 && AllMoney[0].Pos.X + Money.size < 0)
             {
                 AllMoney.RemoveAt(0);
             }

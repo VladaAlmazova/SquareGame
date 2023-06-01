@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace Game1
 {
    class Entity
     {
         private const int CharSize = 120;
-        const int indent = 0;//10; кратное 5
+        const int indent = 0;
 
         public static int MapWidth, MapHeight;
         public static SpriteBatch SpriteBatch { get; set; }
