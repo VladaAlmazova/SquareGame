@@ -19,19 +19,20 @@ namespace Game1
             Entity.SpriteBatch.DrawString(TextMoney, 
                 "cчет : " + Entity.Score.ToString(), 
                 new Vector2(1400, 20), 
-                Color.Black); // draw text
-            Entity.SpriteBatch.DrawString(TextTime, 
-                gameTime.TotalGameTime.Minutes.ToString() + " : " + gameTime.TotalGameTime.Seconds.ToString(), 
-                new Vector2(20, 880), 
-                Color.Black); // draw text
+                Color.AliceBlue); // draw text
             Entity.SpriteBatch.DrawString(TextTime,
+                gameTime.TotalGameTime.Minutes.ToString() + " : " + gameTime.TotalGameTime.Seconds.ToString(),
+                new Vector2(20, 880),
+                Color.Coral);//Color.Black); // draw text
+            /*Entity.SpriteBatch.DrawString(TextTime,
                 (Math.Round(Entity.Character.energy*100)).ToString() + " % " ,
-                new Vector2(1400, 60),
-                Color.Black); // draw text
+                new Vector2(1400, 70),
+                Color.AliceBlue);// draw text
+            */
             Entity.SpriteBatch.DrawString(TextTime,
                 (Math.Round(Enemy.speed)).ToString() + "  ",
-                new Vector2(1400, 100),
-                Color.Black); // draw text
+                new Vector2(0, 0),
+                Color.AliceBlue); // draw text
         }
     }
 }

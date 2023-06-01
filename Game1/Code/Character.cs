@@ -215,7 +215,7 @@ namespace Game1
 
             MoneyPack.CollectWhatCan();
 
-            if (Ups == 0)
+            /*if (Ups == 0)
             {
                 nowSpeed = (int)Math.Round(maxspeed * energy);
                 energy += 0.004;
@@ -234,7 +234,28 @@ namespace Game1
                 }
                     
                 nowSpeed = (int)Math.Round(maxspeed * energy);
+            }*/
+            if (Ups == 0)
+            {
+                //nowSpeed = (int)Math.Round(maxspeed * energy);
+                Energy.energy += 0.004;
+                if (Energy.energy >= 1)
+                    Energy.energy = 1;
             }
+            else
+            {
+
+                Energy.energy -= 0.011;
+                if (Energy.energy <= 0)
+                {
+                    Energy.energy = 0;
+                    lastKey = Keys.S;
+                    Fall = true;
+                }
+
+                nowSpeed = (int)Math.Round(maxspeed * Energy.energy);
+            }
+            nowSpeed = (int)Math.Round(maxspeed * Energy.energy);
         }
 
         public void Draw(GameTime gameTime)

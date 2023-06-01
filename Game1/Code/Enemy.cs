@@ -27,11 +27,12 @@ namespace Game1
 
         public void Update(GameTime gameTime)
         {
-            var seconds = gameTime.TotalGameTime.Seconds;
+            var seconds = gameTime.TotalGameTime.TotalSeconds;
             if(seconds >= 1)
             {
                 Pos.X += (int)Math.Round(speed);
             }
+
             if (Character.Pos.X < Pos.X + MapWidth)
             {
                 GameOver.IsTheEnd = true;

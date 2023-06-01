@@ -29,6 +29,8 @@ namespace Game1
 
         public static GameOver GameOver = new GameOver();
 
+        public static Energy Energy = new Energy();
+
         public static void InIt(SpriteBatch spriteBatch, int width, int height)
         {
             SpriteBatch = spriteBatch;
@@ -47,6 +49,7 @@ namespace Game1
             MoneyPack.Draw(gameTime);
             Enemy.Draw(gameTime);
             Texts.Draw(gameTime);
+            Energy.Draw(gameTime);
             GameOver.Draw();
         }
 

@@ -8,9 +8,10 @@ namespace Game1
     public class Game1 : Game 
     {
         private GraphicsDeviceManager graphics;
-        private SpriteBatch spriteBatch;     
+        private SpriteBatch spriteBatch;
+        public static Texture2D background { get; set; }
 
-        
+
 
         public Game1()
         {
@@ -32,13 +33,15 @@ namespace Game1
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
             Entity.InIt(spriteBatch, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
-            Character.texture2D = Content.Load<Texture2D>("character");//"main_character"); //120*120
-            Platform.texture2D = Content.Load<Texture2D>("platform");//20*20
+            Character.texture2D = Content.Load<Texture2D>("custom/character_n");//"character");//"main_character"); //120*120
+            Platform.texture2D = Content.Load<Texture2D>("custom/platform_n");//"platform");//20*20
             Enemy.texture2D = Content.Load<Texture2D>("Enemy1");
-            Money.texture2D = Content.Load<Texture2D>("money");
+            Money.texture2D = Content.Load<Texture2D>("custom/money_n");//"money");
             GameOver.gameOverTexture = Content.Load<Texture2D>("gameOver");
             Texts.TextMoney = Content.Load<SpriteFont>("TextMoney");
             Texts.TextTime = Content.Load<SpriteFont>("TextTime");
+            Energy.texture2D = Content.Load<Texture2D>("custom/energy9");
+            background = Content.Load<Texture2D>("custom/background");
         }
 
         protected override void Update(GameTime gameTime)
@@ -57,8 +60,10 @@ namespace Game1
 
         protected override void Draw(GameTime gameTime)
         {
+            
             GraphicsDevice.Clear(Color.WhiteSmoke);
             spriteBatch.Begin();
+            spriteBatch.Draw(background, Vector2.Zero, Color.White);
             Entity.Draw(gameTime);
             
             spriteBatch.End();           
