@@ -44,17 +44,17 @@ namespace Game1
                 case Keys.Left:
                     posTest.X -= speed;
                     CanFall(posTest);
-                    Ups = 0;
+                    quantityUp = 0;
                     break;
                 case Keys.Right:
                     posTest.X += speed;
                     CanFall(posTest);
                     wasRight = true;
-                    Ups = 0;
+                    quantityUp = 0;
                     break;
                 case Keys.Up:
                     posTest.Y -= speed;
-                    Ups++;
+                    quantityUp++;
                     break;
                 default:
                     key = lastKey;
@@ -65,9 +65,7 @@ namespace Game1
         }
 
         private bool SomethingBad = false;
-        private int Ups = 0;
-
-        private static int Ws = 0;
+        private int quantityUp = 0;
 
         private Vector2 CorrectPosUpdate(Vector2 posTest, int dist)
         {
@@ -161,7 +159,6 @@ namespace Game1
 
         public void Update(Keys[] keys)
         {
-            var startPos = Pos;
             var posTest = Pos;
             if (!Fall)
             {
@@ -186,7 +183,7 @@ namespace Game1
                 if (lastKey == Keys.Up)
                 {
                     lastKey = Keys.S;
-                    Ups = 0;
+                    quantityUp = 0;
                 }
 
             }
@@ -194,7 +191,7 @@ namespace Game1
             if (Fall)
             {
                 posTest.Y += gravity;
-                Ups = 0;
+                quantityUp = 0;
 
             }
 
@@ -203,13 +200,13 @@ namespace Game1
             if (SomethingBad)
             {
                 Fall = false;
-                Ups = 0;
+                quantityUp = 0;
             }
             SomethingBad = false;
 
             MoneyPack.CollectWhatCan();
 
-            if (Ups == 0)
+            if (quantityUp == 0)
             {
                 Energy.energy += 0.004;
                 if (Energy.energy >= 1)
