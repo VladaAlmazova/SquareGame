@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 
-namespace Game1.Code
+namespace SquareGame.Code
 {
     public interface IGameplayModel
     {

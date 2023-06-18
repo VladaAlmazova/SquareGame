@@ -1,3 +1,3 @@
 ﻿
-using var game = new Game1.Game1();
+using var game = new SquareGame.Game1();
 game.Run();

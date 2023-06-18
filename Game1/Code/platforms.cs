@@ -4,9 +4,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 
-namespace Game1
+namespace SquareGame
 {
-    class PackPlatforms : Entity //удаление платформ
+    class PackPlatforms : Entity 
     {
         static public int DistanceEmpty = 0;
         static public Random RandDist = new Random();
